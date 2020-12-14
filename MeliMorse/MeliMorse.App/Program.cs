@@ -7,21 +7,33 @@ namespace MeliMorse.App
 {
     class Program
     {
+
+        //https://morsecode.world/international/morse.html
+
+        static Dictionary<string, string> morseTable = new Dictionary<string, string>();
+
         static void Main(string[] args)
         {
 
-            //https://morsecode.world/international/morse.html
+            string example1 = ".... --- .-.. .-     -- . .-.. ..";
+            string[] spplited = example1.Split(" ");
+
+            InitMorseDictionary();
+
             string input = "000000001101101100111000001111110001111110011111100000001110111111110111011100000001100011111100000111111001111110000000110000110111111110111011100000011011100000000000";
+
+            //string input = "0000000011100000000";
+
+            string inputWithFullStop = "000000001101101100111000001111110001111110011111100000001110011111110001100111111000110011111100000001110111111110111011100000001100011111100000111111001111110000000110000110111111110111011100000011011100000000000";
+
             var morseBits = input.ToCharArray();
 
-            int difference = 3;
-            string morseCode = string.Empty;
+            //var morseBits = inputWithFullStop.ToCharArray();
+
+            //string morseCode = string.Empty;
             string example = ".... --- .-.. .- -- . .-.. ..";
-            string trimmed = "....---.-...---..-....";
-
-
-            int oneTiming = 0, zeroTimming = 0;
-            int oneMinSequence = 0, oneMaxSequence = 0, zeroMinSequence = 0, zeroMaxSequence = 0;
+            string letterSeparator = " ";
+            int oneTiming = 0, zeroTimming = 0, oneMinSequence = 0, oneMaxSequence = 0, zeroMinSequence = 0, zeroMaxSequence = 0;
 
             List<KeyValuePair<int, int>> bitCount = new List<KeyValuePair<int, int>>();
 
@@ -30,51 +42,74 @@ namespace MeliMorse.App
 
                 int number = int.Parse(morseBits[i].ToString());
 
+                //if (zeroTimming > zeroMaxDelay)
+                //    break;
+
                 if (number == 1)
                 {
                     oneTiming++;
-                    
-                    if (zeroMinSequence == 0 && zeroMaxSequence == 0 && zeroTimming > 0)
+
+                    if (zeroTimming > 0)
                     {
-                        zeroMinSequence = zeroMaxSequence = zeroTimming;
-                        bitCount.Add(new KeyValuePair<int, int>(0, zeroTimming));
-                    }
-                    else if (zeroTimming != 0)
-                    {
-                        if (zeroTimming > zeroMaxSequence)
-                            zeroMaxSequence = zeroTimming;
-                        else if (zeroTimming < zeroMinSequence)
+
+                        if (zeroMinSequence == 0 || zeroMinSequence > zeroTimming)
                             zeroMinSequence = zeroTimming;
 
                         bitCount.Add(new KeyValuePair<int, int>(0, zeroTimming));
+
+                        zeroTimming = 0;
                     }
 
-                    zeroTimming = 0;
+                    //if (zeroMinSequence == 0 && zeroMaxSequence == 0 && zeroTimming > 0)
+                    //{
+                    //    zeroMinSequence = zeroMaxSequence = zeroTimming;
+                    //    bitCount.Add(new KeyValuePair<int, int>(0, zeroTimming));
+                    //}
+                    //else if (zeroTimming != 0)
+                    //{
+                    //    if (zeroTimming > zeroMaxSequence)
+                    //        zeroMaxSequence = zeroTimming;
+                    //    else if (zeroTimming < zeroMinSequence)
+                    //        zeroMinSequence = zeroTimming;
+                    //
+                    //    bitCount.Add(new KeyValuePair<int, int>(0, zeroTimming));
+                    //}
 
                 }
-                else if( number == 0)
+                else if (number == 0)
                 {
-                    
+
                     zeroTimming++;
 
-                    if (oneMinSequence == 0 && oneMaxSequence == 0 && oneTiming > 0)
+                    if (oneTiming > 0)
                     {
-                        oneMinSequence = oneMaxSequence = oneTiming;
-                        bitCount.Add(new KeyValuePair<int, int>(1, oneTiming));
-                    }
-                    else if(oneTiming != 0)
-                    {
-                        if (oneTiming > oneMaxSequence)
-                            oneMaxSequence = oneTiming;
-                        else if (oneTiming < oneMinSequence)
+
+                        if (oneMinSequence == 0 || oneMinSequence > oneTiming)
                             oneMinSequence = oneTiming;
 
-
                         bitCount.Add(new KeyValuePair<int, int>(1, oneTiming));
+
+                        oneTiming = 0;
 
                     }
 
-                    oneTiming = 0;
+                    //if (oneMinSequence == 0 && oneMaxSequence == 0 && oneTiming > 0)
+                    //{
+                    //    oneMinSequence = oneMaxSequence = oneTiming;
+                    //    bitCount.Add(new KeyValuePair<int, int>(1, oneTiming));
+                    //}
+                    //else if (oneTiming != 0)
+                    //{
+                    //    if (oneTiming > oneMaxSequence)
+                    //        oneMaxSequence = oneTiming;
+                    //    else if (oneTiming < oneMinSequence)
+                    //        oneMinSequence = oneTiming;
+                    //
+                    //
+                    //    bitCount.Add(new KeyValuePair<int, int>(1, oneTiming));
+                    //
+                    //}
+                    
                 }
             }
 
@@ -92,39 +127,67 @@ namespace MeliMorse.App
                     //aca sacamos si es punto o letra
                     //punto , letra
 
-                    if (oneMaxSequence - item.Value >= difference)
+                    //if (item.Value == 1 || (oneMaxSequence - item.Value >= oneDifference))
+
+                    if (item.Value == 1 || (oneMinSequence + 3 > item.Value))
                         morseParagraph += ".";
                     else
                         morseParagraph += "-";
+
                 }
 
-                //if (item.Key == 0)
-                //{ 
-                // //aca sacamos la cuenta si es espacio entre caracter, letra o palabra
-                //}
+                if (item.Key == 0 && morseParagraph != string.Empty)
+                {
+                    if (item.Value > zeroMinSequence + 2)
+                    {
+                        morseParagraph += letterSeparator;
+                    }
+                }
 
             }
 
 
-            Console.WriteLine($"Original: {example}");
-            Console.WriteLine($"Original Trimmed: {trimmed}");
-            Console.WriteLine($"Decoded         : {morseParagraph}");
-            Console.WriteLine(" -----  One -----");
-            Console.WriteLine($"Menor One: { oneMinSequence}");
-            Console.WriteLine($"Mayor One: { oneMaxSequence}");
-            Console.WriteLine(" -----  Zero -----");
-            Console.WriteLine($"Menor Zero: { zeroMinSequence}");
-            Console.WriteLine($"Mayor Zero: { zeroMaxSequence}");
+            string message = string.Empty;
 
-            Console.WriteLine("-----  BIT Count ------");
+            List<string> wordsToTRanslate = morseParagraph.Split(letterSeparator).ToList();
 
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var item in bitCount)
+            foreach (var item in wordsToTRanslate)
             {
-                Console.WriteLine($"Bit: {item.Key} -- Timing: {item.Value} ");
-                sb.AppendLine(string.Concat(Enumerable.Repeat(item.Key.ToString(), item.Value)));
+                string letter = TranslateMorseToLetter(item);
+                if (letter == "stop")
+                    break;
+
+                message += letter;
             }
+
+
+
+            Console.WriteLine($"Original : {example}");
+            Console.WriteLine($"Decoded  : {morseParagraph}");
+            Console.WriteLine($"Translated: {message}");
+
+            Action ShowResults = () =>
+            {
+                Console.WriteLine(" -----  One -----");
+                Console.WriteLine($"Menor One: { oneMinSequence}");
+                Console.WriteLine($"Mayor One: { oneMaxSequence}");
+                Console.WriteLine(" -----  Zero -----");
+                Console.WriteLine($"Menor Zero: { zeroMinSequence}");
+                Console.WriteLine($"Mayor Zero: { zeroMaxSequence}");
+            };
+
+            //Decode
+
+
+            //Console.WriteLine("-----  BIT Count ------");
+
+            //StringBuilder sb = new StringBuilder();
+
+            //foreach (var item in bitCount)
+            //{
+            //        Console.WriteLine($"Bit: {item.Key} -- Timing: {item.Value} ");
+            //        sb.AppendLine(string.Concat(Enumerable.Repeat(item.Key.ToString(), item.Value)) + "  <-" + item.Value.ToString());
+            //}
 
             Console.ReadLine();
 
@@ -143,9 +206,15 @@ namespace MeliMorse.App
         }
 
 
-        static Dictionary<string, string> GetMorseCharacters()
+        static string TranslateMorseToLetter(string morseCode)
         {
-            Dictionary<string, string> morseTable = new Dictionary<string, string>()
+            morseTable.TryGetValue(morseCode, out string letter);
+            return letter;
+        }
+
+        static Dictionary<string, string> InitMorseDictionary()
+        {
+            morseTable = new Dictionary<string, string>()
             {
                 [".-"] = "A",
                 ["-..."] = "B",
