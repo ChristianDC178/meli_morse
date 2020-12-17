@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using WindowsInput;
+using WindowsInput.Native;
 
 namespace MeliMorse.App
 {
@@ -9,11 +14,43 @@ namespace MeliMorse.App
     {
 
         //https://morsecode.world/international/morse.html
-
         static Dictionary<string, string> morseTable = new Dictionary<string, string>();
 
         static void Main(string[] args)
         {
+
+            bool continueMessage = true;
+
+            string message = string.Empty;
+
+            do
+            {
+
+                Stopwatch stopwatch = new Stopwatch();
+
+                stopwatch.Start();
+                string inputStr = Console.ReadLine();
+                stopwatch.Stop();
+
+                long pause = (stopwatch.ElapsedMilliseconds / 500);
+
+                string zeros = string.Empty;
+
+                for (int i = 0; i < pause; i++)
+                {
+                    zeros += "0";
+                    //Console.Write("0");
+                }
+
+                message += inputStr + zeros;
+
+                Console.Clear();
+                Console.Write(message);
+
+                continueMessage = pause < 10;
+                    
+
+            } while (continueMessage);
 
             string example1 = ".... --- .-.. .-     -- . .-.. ..";
             string[] spplited = example1.Split(" ");
@@ -25,6 +62,8 @@ namespace MeliMorse.App
             //string input = "0000000011100000000";
 
             string inputWithFullStop = "000000001101101100111000001111110001111110011111100000001110011111110001100111111000110011111100000001110111111110111011100000001100011111100000111111001111110000000110000110111111110111011100000011011100000000000";
+
+            input = message;
 
             var morseBits = input.ToCharArray();
 
@@ -109,7 +148,7 @@ namespace MeliMorse.App
                     //    bitCount.Add(new KeyValuePair<int, int>(1, oneTiming));
                     //
                     //}
-                    
+
                 }
             }
 
@@ -129,7 +168,7 @@ namespace MeliMorse.App
 
                     //if (item.Value == 1 || (oneMaxSequence - item.Value >= oneDifference))
 
-                    if (item.Value == 1 || (oneMinSequence + 3 > item.Value))
+                    if (item.Value == 1 || (item.Value - oneMinSequence < 2))
                         morseParagraph += ".";
                     else
                         morseParagraph += "-";
@@ -146,9 +185,6 @@ namespace MeliMorse.App
 
             }
 
-
-            string message = string.Empty;
-
             List<string> wordsToTRanslate = morseParagraph.Split(letterSeparator).ToList();
 
             foreach (var item in wordsToTRanslate)
@@ -159,8 +195,6 @@ namespace MeliMorse.App
 
                 message += letter;
             }
-
-
 
             Console.WriteLine($"Original : {example}");
             Console.WriteLine($"Decoded  : {morseParagraph}");
@@ -176,35 +210,9 @@ namespace MeliMorse.App
                 Console.WriteLine($"Mayor Zero: { zeroMaxSequence}");
             };
 
-            //Decode
-
-
-            //Console.WriteLine("-----  BIT Count ------");
-
-            //StringBuilder sb = new StringBuilder();
-
-            //foreach (var item in bitCount)
-            //{
-            //        Console.WriteLine($"Bit: {item.Key} -- Timing: {item.Value} ");
-            //        sb.AppendLine(string.Concat(Enumerable.Repeat(item.Key.ToString(), item.Value)) + "  <-" + item.Value.ToString());
-            //}
-
             Console.ReadLine();
 
         }
-
-        static string GetMorseChar(int timing)
-        {
-            if (timing < 2)
-                return "";
-
-            if (timing >= 1 && timing <= 3)
-                return ".";
-
-            return "-";
-
-        }
-
 
         static string TranslateMorseToLetter(string morseCode)
         {
