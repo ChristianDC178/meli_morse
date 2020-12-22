@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InputSimulatorPlus" Version="1.0.7" />
+    <ProjectReference Include="..\..\MeliMorse.Translator\MeliMorse.Translator.csproj" />
   </ItemGroup>
 
 </Project>
