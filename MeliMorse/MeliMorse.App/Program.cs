@@ -14,19 +14,6 @@ namespace MeliMorse.App
 
             bool continueMessage = true;
             string message = string.Empty;
-            string letterSeparator = " ";
-
-
-            string spaces = "       ";
-
-            Console.WriteLine(spaces.Split(" ").Length);
-
-
-
-            //string msg = MorseDecoder.translate2Human("");
-            Console.WriteLine(MorseDecoder.traslate2Morse("!HOLA MELI"));
-            //Console.WriteLine(msg);
-            Console.ReadKey();
 
             do
             {
@@ -59,7 +46,7 @@ namespace MeliMorse.App
 
             string morseParagraph = MorseDecoder.decodeBits2Morse(message);
 
-            List<string> wordsToTRanslate = morseParagraph.Split(letterSeparator).ToList();
+            List<string> wordsToTRanslate = morseParagraph.Split(MorseDecoder.LetterSeparator).ToList();
 
             string traslated = string.Empty;
 

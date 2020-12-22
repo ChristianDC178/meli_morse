@@ -1,44 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MeliMorse.Translator;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MeliMorse.Translator;
-using Microsoft.AspNetCore.Http;
+using MeliMorse.Api.Models;
 
 namespace MeliMorse.Api.Controllers
 {
-
-    public class TranslatorControllerBase : ControllerBase
-    {
-
-
-        [NonAction]
-        public IActionResult ExecuteResponse(Func<MorseResponse> func)
-        {
-            try
-            {
-                MorseResponse responseApi = func.Invoke();
-                return StatusCode(responseApi.Code, responseApi);
-            }
-            catch (Exception ex)
-            {
-
-                //La ex puede ser logueada
-
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new MorseResponse()
-                    {
-                        Code = StatusCodes.Status500InternalServerError,
-                        Response = "Unespected Error"
-                    });
-            }
-        }
-
-
-    }
-
 
     [ApiController]
     [Route("api/[controller]")]
@@ -61,8 +28,8 @@ namespace MeliMorse.Api.Controllers
 
                 MorseResponse morseResponse = new MorseResponse();
 
-                morseResponse.Code = StatusCodes.Status200OK;
                 morseResponse.Response = MorseDecoder.translate2Human(request.Text);
+                morseResponse.Code = StatusCodes.Status200OK;
 
                 return morseResponse;
 
@@ -77,9 +44,9 @@ namespace MeliMorse.Api.Controllers
             {
 
                 MorseResponse morseResponse = new MorseResponse();
-
-                morseResponse.Code = StatusCodes.Status200OK;
+                
                 morseResponse.Response = MorseDecoder.traslate2Morse(request.Text);
+                morseResponse.Code = StatusCodes.Status200OK;
 
                 return morseResponse;
 
@@ -88,14 +55,5 @@ namespace MeliMorse.Api.Controllers
 
     }
 
-    public class MorseRequest
-    {
-        public string Text { get; set; }
-    }
-
-    public class MorseResponse
-    {
-        public int Code { get; set; }
-        public string Response { get; set; }
-    }
+  
 }

@@ -9,8 +9,8 @@ namespace MeliMorse.Translator
     {
 
         static Dictionary<string, string> _morseTable = new Dictionary<string, string>();
-        static string LetterSeparator = " ";
-        static string WordSeparator = "    ";
+        public const string LetterSeparator = " ";
+        public const string WordSeparator = "    ";
 
         static MorseDecoder()
         {
