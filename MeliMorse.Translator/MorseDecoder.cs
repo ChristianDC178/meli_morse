@@ -86,10 +86,12 @@ namespace MeliMorse.Translator
 
                 if (item.Key == 0 && morseParagraph != string.Empty)
                 {
-                    if (item.Value > zeroMinSequence + 2)
+                    if (item.Value > (zeroMinSequence + 2))
                     {
                         morseParagraph += LetterSeparator;
                     }
+                    //else
+                    //    morseParagraph += WordSeparator;
                 }
             }
 

@@ -25,7 +25,7 @@ namespace MeliMorse.App
 
                 stopwatch.Stop();
 
-                long pause = (stopwatch.ElapsedMilliseconds / 500);
+                long pause = (stopwatch.ElapsedMilliseconds / 800);
 
                 string zeros = string.Empty;
 
