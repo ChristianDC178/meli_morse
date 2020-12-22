@@ -15,6 +15,9 @@ namespace MeliMorse.App
             bool continueMessage = true;
             string message = string.Empty;
 
+            //TestMeliMessage();
+            //Console.ReadKey();
+
             do
             {
 
@@ -67,7 +70,9 @@ namespace MeliMorse.App
         public static void TestMeliMessage()
         {
             string meliMessage = "000000001101101100111000001111110001111110011111100000001110111111110111011100000001100011111100000111111001111110000000110000110111111110111011100000011011100000000000";
-            Console.WriteLine(MorseDecoder.decodeBits2Morse(meliMessage));
+            string morseMessage = MorseDecoder.decodeBits2Morse(meliMessage);
+            Console.WriteLine(morseMessage);
+            Console.WriteLine(MorseDecoder.translate2Human(morseMessage));
         }
 
         public static void Test_MessageWithStop()

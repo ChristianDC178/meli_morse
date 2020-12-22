@@ -102,22 +102,15 @@ namespace MeliMorse.Translator
         public static string translate2Human(string morseParagraph)
         {
 
-            string[] words = morseParagraph.Split(WordSeparator);
+            string[] wordLetters = morseParagraph.Split(LetterSeparator);
             string message = string.Empty;
 
-            foreach (var item in words)
+            foreach (var letter in wordLetters)
             {
-
-                string[] wordLetters = item.Split(LetterSeparator);
-
-                foreach (var letter in wordLetters)
-                {
-                    message += TranslateMorseToLetter(letter);
-                }
-
-                message += LetterSeparator;
-
+                message += TranslateMorseToLetter(letter);
             }
+
+            message += LetterSeparator;
 
             return message;
         }
